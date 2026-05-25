@@ -1,0 +1,358 @@
+Notify Me - Updated Product Specification & User Documentation
+1. Executive Summary
+The latest update to Notify Me introduces Smart Reminder Suggestions, Priority Levels, Recurring Tasks, Task Analytics Dashboard, Time Zone Awareness, and Notification History Center. These capabilities improve productivity, personalization, and reliability while reducing missed reminders and notification fatigue.
+
+Expected Benefits:
+• Improved task completion rates
+• Better reminder engagement
+• Increased retention and daily usage
+• Accurate scheduling across time zones
+• Better visibility into productivity analytics
+2. Smart Reminder Suggestions
+Purpose:
+Provide intelligent reminder recommendations based on user behavior and engagement patterns.
+
+User Stories:
+1. Users receive personalized reminder timing suggestions.
+2. Users reduce manual reminder configuration.
+3. Users avoid excessive reminders.
+
+Acceptance Criteria:
+• Suggestions appear during task creation.
+• Suggestions adapt based on completion history.
+• Suggestions can be disabled.
+
+UI Requirements:
+• Suggestion cards with “Apply Suggestion” button.
+• Accessible labels and keyboard navigation support.
+
+Notification Behavior:
+• Suggestions are passive and shown only inside task workflows.
+3. Priority Levels
+Priority Types:
+• Low
+• Medium
+• High
+• Critical
+
+Behavior:
+• High/Critical tasks appear first.
+• Critical tasks receive escalation reminders.
+• Sorting updates immediately when priority changes.
+
+Accessibility:
+• Color plus text/icon indicators.
+• Screen reader announces priority labels.
+4. Recurring Tasks
+Supported Recurrence:
+• Daily
+• Weekly
+• Monthly
+• Custom intervals
+
+Behavior:
+• Future occurrences generated automatically.
+• DST-aware scheduling.
+• Manual skip does not break future recurrence.
+
+Scheduler:
+• Quartz Scheduler recommended.
+• Deduplication and retry logic required.
+5. Task Analytics Dashboard
+Dashboard Metrics:
+• Completion rate
+• Overdue tasks
+• Reminder open rate
+• Snooze rate
+• Time-to-complete
+
+Visualizations:
+• Line charts
+• Pie charts
+• Bar charts
+• Heatmaps
+
+Accessibility:
+• Keyboard navigation
+• Screen-reader summaries
+• High contrast charts
+6. Time Zone Awareness
+Requirements:
+• Store timestamps in UTC.
+• Convert based on user-selected timezone.
+• Automatically handle DST changes.
+
+UI:
+• Auto-detect timezone option.
+• Manual timezone selection.
+
+Synchronization:
+• Cross-device sync consistency.
+7. Notification History Center
+Features:
+• Search notifications
+• Filter by date/type/status
+• Retry notification
+• Export history
+• Bulk delete
+
+Privacy:
+• Respect deletion requests.
+• Redact deleted task names.
+8. Data and Backend Design
+Database Changes:
+Tasks Table:
+• priority
+• recurrence_rule
+• timezone
+• suggestion_enabled
+
+Notification History Table:
+• notification_type
+• sent_at_utc
+• opened_at_utc
+
+Recommended Stack:
+• Java 21
+• Spring Boot 3
+• PostgreSQL
+• Redis
+• Quartz Scheduler
+• Firebase Cloud Messaging
+9. API Endpoints
+Example Endpoints:
+GET /api/v1/tasks/reminder-suggestions
+PATCH /api/v1/tasks/{id}/priority
+POST /api/v1/tasks/recurring
+GET /api/v1/analytics/dashboard
+GET /api/v1/notifications/history
+
+Authentication:
+• JWT-based authentication
+• Role-based authorization
+10. Priority & Scheduling Logic
+Priority Influence:
+• Critical tasks trigger repeated reminders.
+• Low priority reduces reminder frequency.
+
+Conflict Resolution:
+• Manual reminders override suggestions.
+• Duplicate reminders are deduplicated.
+
+Smart Suggestions Inputs:
+• Completion history
+• Reminder engagement
+• Snooze patterns
+11. Analytics & Metrics
+Metrics:
+• Daily active users
+• Notification CTR
+• Task completion rate
+• Overdue task reduction
+
+Instrumentation:
+• task_created
+• reminder_opened
+• task_completed
+12. Privacy, Security & Compliance
+Security:
+• AES-256 encryption at rest
+• TLS encryption in transit
+
+Compliance:
+• UTC timestamp storage
+• Data minimization
+• GDPR/CCPA deletion support
+13. QA & Testing Plan
+Testing:
+• Unit tests
+• Integration tests
+• E2E tests
+• Regression tests
+
+Performance Targets:
+• Dashboard load < 2 seconds
+• Reminder throughput 10k/minute
+• Notification accuracy ±5 seconds
+14. Rollout & Migration
+Rollout Strategy:
+1. Internal alpha
+2. Closed beta
+3. Gradual rollout
+4. Full release
+
+Migration:
+• Additive schema changes
+• Async backfills
+• Feature flags
+• Safe rollback support
+15. End User Help Content
+Help Articles:
+• Smart Reminder Suggestions
+• Priority Levels
+• Recurring Tasks
+• Analytics Dashboard
+• Time Zone Settings
+• Notification History Center
+
+Microcopy Examples:
+• “No tasks yet. Add one to get started.”
+• “Based on your activity patterns.”
+• “Unable to sync reminders.”
+16. Monitoring & Success Metrics
+KPIs:
+• +20% reminder CTR
+• +15% task completion
+• -25% overdue tasks
+
+Operational Monitoring:
+• Scheduler lag
+• Duplicate notifications
+• Queue retries
+• API latency
+17. Appendix
+Glossary:
+• DST – Daylight Saving Time
+• CTR – Click Through Rate
+• UTC – Coordinated Universal Time
+
+Sample SQL:
+ALTER TABLE tasks
+ADD COLUMN priority VARCHAR(20),
+ADD COLUMN timezone VARCHAR(100),
+ADD COLUMN recurrence_rule JSONB;
+18. Application Flow with New Features
+Authentication Flow
+1. User opens app
+2. Splash screen displayed
+3. User selects login method:
+   • Google Login
+   • Mobile OTP Login
+   • Email Login
+4. User authentication verified
+5. JWT token generated
+6. User redirected to Home Dashboard
+Home Dashboard Flow
+1. User lands on Home Screen
+2. Today’s tasks loaded
+3. Tasks sorted by:
+   • Priority
+   • Reminder time
+   • Due date
+4. Smart reminder footer displayed for upcoming reminders
+5. Analytics summary widgets shown:
+   • Tasks completed
+   • Overdue count
+   • Productivity streak
+6. User can:
+   • Add task
+   • Update task
+   • Complete task
+   • Open notification history
+   • Open analytics dashboard
+Task Creation Flow
+1. User clicks Add Task
+2. User enters:
+   • Task name
+   • Description
+   • Priority
+   • Due date
+   • Reminder preference
+3. Smart Reminder Suggestions generated
+4. User selects reminder suggestion or custom reminder
+5. User optionally enables recurrence
+6. Task saved
+7. Scheduler queue updated
+8. Push notification scheduled
+Recurring Task Flow
+1. User selects recurrence type:
+   • Daily
+   • Weekly
+   • Monthly
+   • Custom interval
+2. System validates recurrence rule
+3. Quartz Scheduler creates future schedules
+4. Future occurrences generated lazily
+5. Notifications scheduled automatically
+6. Task instances appear on upcoming dates
+Smart Reminder Suggestion Flow
+1. User creates or edits task
+2. Suggestion engine analyzes:
+   • Historical completion behavior
+   • Reminder interactions
+   • Priority level
+   • Task category
+3. Suggested reminder displayed
+4. User accepts or dismisses suggestion
+5. User preference stored for future recommendations
+Priority-Based Workflow
+1. User assigns priority:
+   • Low
+   • Medium
+   • High
+   • Critical
+2. Task ordering updates immediately
+3. Notification intensity adjusted:
+   • Critical ? repeated reminders
+   • Low ? fewer reminders
+4. Dashboard analytics updated with priority metrics
+Notification Flow
+1. Scheduler triggers notification job
+2. Push notification sent via Firebase Cloud Messaging
+3. Notification stored in Notification History Center
+4. User actions:
+   • Open
+   • Snooze
+   • Dismiss
+   • Retry
+5. Engagement analytics captured
+Notification History Center Flow
+1. User opens Notification History
+2. System loads notification timeline
+3. User can:
+   • Search notifications
+   • Filter by task/date/type
+   • Retry notifications
+   • Bulk delete history
+4. Export available in:
+   • PDF
+   • CSV
+   • XLSX
+Analytics Dashboard Flow
+1. User opens Analytics Dashboard
+2. Backend aggregates task metrics
+3. Dashboard displays:
+   • Completion trends
+   • Overdue trends
+   • Reminder engagement
+   • Productivity heatmaps
+4. User applies filters:
+   • Date range
+   • Priority
+   • Category
+5. Charts update dynamically
+Time Zone Synchronization Flow
+1. User changes device timezone
+2. App detects timezone update
+3. UTC timestamps converted locally
+4. Scheduled reminders recalculated
+5. Cross-device sync maintained
+6. DST handling applied automatically
+Profile & Settings Flow
+1. User opens Profile
+2. User can:
+   • Change password
+   • Update email
+   • Update mobile number
+   • Configure notification settings
+   • Configure timezone
+   • Enable/disable smart suggestions
+3. OTP verification required for sensitive changes
+4. Updated settings synced across devices
+Failure & Recovery Flow
+1. Notification delivery fails
+2. Retry queue triggered
+3. Exponential backoff applied
+4. Failure logged
+5. Notification retried
+6. Permanent failures stored for diagnostics
