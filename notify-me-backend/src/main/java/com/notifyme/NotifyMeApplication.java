@@ -11,5 +11,6 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 public class NotifyMeApplication {
     public static void main(String[] args) {
         SpringApplication.run(NotifyMeApplication.class, args);
+        System.out.println("Running in Dev");
     }
 }
